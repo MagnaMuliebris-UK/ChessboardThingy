@@ -1,8 +1,9 @@
 package org.example;
 
+
 public class Queen{
-    int[] initPos = new int[2];
-    int[] moveCheck = initPos;
+    int[] initPos;
+    int[] moveCheck;
     int count = 0;
     public Queen(int[] _initPos){
         initPos = _initPos;

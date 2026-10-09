@@ -1,13 +1,13 @@
 package org.example;
 import java.util.Arrays;
 import java.util.ConcurrentModificationException;
-import java.util.Objects;
 import java.util.Scanner;
 
 import static org.example.Chessboard.*;
+import static org.example.shorthand.intStance;
 
 public class Main {
-    public static void main() {
+    static void main() {
         while (true) {
             Scanner s = new Scanner(System.in);
             System.out.println("""
@@ -24,26 +24,17 @@ public class Main {
                     6. Exit
                     """);
             String select = s.nextLine();
-            if (Objects.equals(select, "1")) chessboardRun();
-            else if (Objects.equals(select, "2")) {
-                if (MODE.boardModeNxN) {
-                    System.out.println("Please enter the size of the board (n,n), starting from (1,1)");
-                    int n = Integer.parseInt(s.nextLine());
-                    boardPlane = new int[]{n, n};
-                } else {
-                    System.out.println("Please enter the size of the board (x,y), starting from (1,1)");
-                    System.out.println("Enter x:");
-                    int x = Integer.parseInt(s.nextLine());
-                    System.out.println("Enter y:");
-                    int y = Integer.parseInt(s.nextLine());
-                    boardPlane = new int[]{x, y};
-                }
-            } else if (Objects.equals(select, "3")) obsMenu();
-            else if (Objects.equals(select, "4")) queenMenu();
-             else if (Objects.equals(select, "5")) settingsMenu();
-             else if (Objects.equals(select, "6")) System.exit(0);
+            switch (select) {
 
 
+                case "1": chessboardRun(); break;
+                case "2": setBoardPlane(s); break;
+                case "3": obsMenu(); break;
+                case "4": queenMenu(); break;
+                case "5": settingsMenu(); break;
+                case "6": System.exit(0); break;
+                default:System.out.println("Please enter a valid entry");
+            }
         }
     }
 
@@ -63,31 +54,19 @@ public class Main {
             catch(ConcurrentModificationException e){
                 //get over yourself. You are FINE. Totally...
             }
-            catch (Exception e)
-            {
-                //Haha, the game is off
-                TheGameIsOn = false;
-            }
+            catch (Exception e) {TheGameIsOn = false;}
         }
-        int truth = trueCount();
+        System.out.printf("Queens can move a total of %s tiles.", trueCount());
     }
 
-    static void shuffle(Queen[] a)
-    {
-        for (int i = 1; i < a.length; i++)
-            swap(a, i, (int)(Math.random() * i));
-    }
+    static void shuffle(Queen[] a){for (int i = 1; i < a.length; i++) swap(a, i, (int)(Math.random() * i));}
 
-    static void swap(Queen[] a, int i, int j)
-    {
-        Queen temp = a[i];
-        a[i] = a[j];
-        a[j] = temp;
-    }
+    static void swap(Queen[] a, int i, int j) {Queen temp = a[i]; a[i] = a[j]; a[j] = temp;}
 
     private static void settingsMenu() {
-        Scanner s = new Scanner(System.in);
-        while (true) {
+        Scanner s = new Scanner(System.in); boolean seting = true;
+        while (seting) {
+            //long ternary sequence to be compact
             System.out.printf("""
                     THE CHESSBOARD MENU - SETTINGS
                     
@@ -99,11 +78,14 @@ public class Main {
                     5. Back
                     """, MODE.countIfObstruct ? "Active" : "Inactive", MODE.countInitPos ? "Active" : "Inactive", MODE.boardModeNxN ? "Active" : "Inactive", MODE.rainbowQueen ? "Active" : "Inactive");
             String select = s.nextLine();
-            if(select.equalsIgnoreCase("1")) MODE.countIfObstruct = !MODE.countIfObstruct;
-            else if (select.equalsIgnoreCase("2")) MODE.countInitPos = !MODE.countInitPos;
-            else if (select.equalsIgnoreCase("3")) MODE.boardModeNxN= !MODE.boardModeNxN;
-            else if (select.equalsIgnoreCase("4")) MODE.rainbowQueen = !MODE.rainbowQueen;
-            else if (select.equalsIgnoreCase("5")) break;
+            switch (select) {
+                case "1": MODE.countIfObstruct = !MODE.countIfObstruct;break;
+                case "2": MODE.countInitPos = !MODE.countInitPos;break;
+                case "3": MODE.boardModeNxN = !MODE.boardModeNxN;break;
+                case "4": MODE.rainbowQueen = !MODE.rainbowQueen;break;
+                case "5": seting = false;break;
+                default:System.out.println("Please enter a valid entry");
+            }
         }
     }
 
@@ -121,40 +103,20 @@ public class Main {
                     """);
             String select = s.nextLine();
             if (select.equalsIgnoreCase("1")) {
-                System.out.println("Please enter the position of the Queen in the form (x,y)");
-                System.out.println("Enter x:");
-                int x = Integer.parseInt(s.nextLine());
-                System.out.println("Enter y:");
-                int y = Integer.parseInt(s.nextLine());
-                if (!posConflictCheck(new int[]{x, y})) queensInPlay.add(new Queen(new int[]{x, y}));
+                int[] xy = intStance(s, "Please enter the position of the Queen in the form (x,y)");
+                if (!posConflictCheck(xy)) queensInPlay.add(new Queen(xy));
             } else if (select.equalsIgnoreCase("2")) {
-                System.out.println("Please enter the position of the Queen in the form (x,y)");
-                System.out.println("Enter x:");
-                int x = Integer.parseInt(s.nextLine());
-                System.out.println("Enter y:");
-                int y = Integer.parseInt(s.nextLine());
-                if (posConflictCheck(new int[]{x, y}))
-                    queensInPlay.remove(getQueenFromPos(new int[]{x, y}));
+                int[] xy = intStance(s, "Please enter the position of the Queen in the form (x,y)");
+                if (posConflictCheck(xy)) queensInPlay.remove(getQueenFromPos(xy));
             } else if (select.equalsIgnoreCase("3")) {
-                System.out.println("Please enter the position of the Queen in the form (x,y)");
-                System.out.println("Enter x:");
-                int x = Integer.parseInt(s.nextLine());
-                System.out.println("Enter y:");
-                int y = Integer.parseInt(s.nextLine());
-                if (posConflictCheck(new int[]{x, y})) {
-                    queensInPlay.remove(getQueenFromPos(new int[]{x, y}));
+                int[] xy = intStance(s, "Please enter the position of the Queen in the form (x,y)");
+                if (posConflictCheck(xy)) {
+                    queensInPlay.remove(getQueenFromPos(xy));
 
-                    System.out.println("Please enter the new position of the Queen in the form (x,y)");
-                    System.out.println("Enter x:");
-                    int x2 = Integer.parseInt(s.nextLine());
-                    System.out.println("Enter y:");
-                    int y2 = Integer.parseInt(s.nextLine());
-                    if (!posConflictCheck(new int[]{x2, y2}))
-                        queensInPlay.add(new Queen(new int[]{x2, y2}));
+                    int[] xy2 = intStance(s, "Please enter the position of the Queen in the form (x,y)");
+                    if (!posConflictCheck(xy2)) queensInPlay.add(new Queen(xy2));
                 }
-            } else if (select.equalsIgnoreCase("4")) {
-                break;
-            }
+            } else if (select.equalsIgnoreCase("4")) break;
         }
     }
 
@@ -172,37 +134,20 @@ public class Main {
                     """);
             String select = s.nextLine();
             if (select.equalsIgnoreCase("1")) {
-                System.out.println("Please enter the position of the obstruction in the form (x,y)");
-                System.out.println("Enter x:");
-                int x = Integer.parseInt(s.nextLine());
-                System.out.println("Enter y:");
-                int y = Integer.parseInt(s.nextLine());
-                if (!posConflictCheck(new int[]{x, y})) obs.add(new int[]{x, y});
+                int[] xy = intStance(s,"Please enter the position of the obstruction in the form (x,y)");
+                if (!posConflictCheck(xy)) obs.add(xy);
             } else if (select.equalsIgnoreCase("2")) {
-                System.out.println("Please enter the position of the obstruction in the form (x,y)");
-                System.out.println("Enter x:");
-                int x = Integer.parseInt(s.nextLine());
-                System.out.println("Enter y:");
-                int y = Integer.parseInt(s.nextLine());
-                if (posConflictCheck(new int[]{x, y})) obs.remove(new int[]{x, y});
+                int[] xy = intStance(s,"Please enter the position of the obstruction in the form (x,y)");
+                if (posConflictCheck(xy)) obs.remove(xy);
             } else if (select.equalsIgnoreCase("3")) {
-                System.out.println("Please enter the position of the obstruction in the form (x,y)");
-                System.out.println("Enter x:");
-                int x = Integer.parseInt(s.nextLine());
-                System.out.println("Enter y:");
-                int y = Integer.parseInt(s.nextLine());
-                if (posConflictCheck(new int[]{x, y})) {
-                    obs.remove(new int[]{x, y});
-
-                    System.out.println("Please enter the new position of the obstruction in the form (x,y)");
-                    System.out.println("Enter x:");
-                    int x2 = Integer.parseInt(s.nextLine());
-                    System.out.println("Enter y:");
-                    int y2 = Integer.parseInt(s.nextLine());
-                    if (!posConflictCheck(new int[]{x2, y2})) obs.add(new int[]{x2, y2});
+                int[] xy = intStance(s,"Please enter the position of the obstruction in the form (x,y)");
+                if (posConflictCheck(xy)) {obs.remove(xy);
+                    int[] xy2= intStance(s,"Please enter the position of the obstruction in the form (x,y)");
+                    if (!posConflictCheck(xy2)) obs.add(xy2);
                 }
             } else if (select.equalsIgnoreCase("4")) break;
 
         }
     }
 }
+

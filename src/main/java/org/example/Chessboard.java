@@ -1,9 +1,20 @@
 package org.example;
 
 import java.util.ArrayList;
+import java.util.Scanner;
+
+import static org.example.shorthand.messageParseOut;
 
 public class Chessboard{
     static int[] boardPlane = new int[2];
+    public static void  setBoardPlane(Scanner s){
+        System.out.printf("Please enter the size of the board %s, starting from (1,1)\n", !MODE.boardModeNxN ?"(x,y)":"(x,x)");
+        int x = messageParseOut(s,"Enter x:");
+        int y = -1;
+        if(!MODE.boardModeNxN) y = messageParseOut(s,"Enter y:");
+        boardPlane = new int[]{x, y==1?x:y};
+    }
+    /// OBSTRUCTIONS
     public static ArrayList<int[]> obs = new ArrayList<>();
     /// NOTE, this does NOT include the current Queen being moveChecked purely for the rainbowQueens functionality
     public static ArrayList<int[]> queenPos = new ArrayList<>();
