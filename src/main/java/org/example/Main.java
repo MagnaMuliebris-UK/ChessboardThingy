@@ -1,13 +1,19 @@
 package org.example;
+import java.security.PublicKey;
 import java.util.Arrays;
 import java.util.ConcurrentModificationException;
+import java.util.Objects;
 import java.util.Scanner;
 
 import static org.example.Chessboard.*;
 import static org.example.shorthand.intStance;
 
 public class Main {
+    static ClassLoader classLoader = ClassLoader.getPlatformClassLoader();
     static void main() {
+        String path = Objects.requireNonNull(classLoader.getResource("ChessboardThingy.txt")).toString();
+        readMeNOW(handleSavedData.retrieveFile(path));
+
         while (true) {
             Scanner s = new Scanner(System.in);
             System.out.println("""
@@ -32,10 +38,23 @@ public class Main {
                 case "3": obsMenu(); break;
                 case "4": queenMenu(); break;
                 case "5": settingsMenu(); break;
-                case "6": System.exit(0); break;
+                case "6": ExitStrategy(); System.exit(0); break;
                 default:System.out.println("Please enter a valid entry");
             }
         }
+    }
+
+    private static void readMeNOW(String fixMeUp) {
+        String[] ThreeLines = fixMeUp.split("#"), boardPlaneS = ThreeLines[0].split(","), obsS = ThreeLines[1].split("~"), queens = ThreeLines[2].split("~");
+        boardPlane = new int[]{Integer.parseInt(boardPlaneS[0]), Integer.parseInt(boardPlaneS[1])};
+        for (String ob : obsS){String[] obS = ob.split(","); obs.add(new int[]{Integer.parseInt(obS[0]), Integer.parseInt(obS[1])});}
+        for (String q : queens) {String[] queenS = q.split(","); queensInPlay.add(new Queen(new int[]{Integer.parseInt(queenS[0]), Integer.parseInt(queenS[1])}));}
+    }
+
+    private static void ExitStrategy() {
+        String readingTime = Chessboard.Stringify();
+        String path = Objects.requireNonNull(classLoader.getResource("ChessboardThingy.txt")).toString();
+        handleSavedData.fileMake(path, readingTime);
     }
 
     private static void chessboardRun() {
@@ -150,4 +169,3 @@ public class Main {
         }
     }
 }
-

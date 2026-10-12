@@ -40,4 +40,19 @@ public class Chessboard{
     public static int trueCount(){ return travelledPos.size(); }
     public static boolean posConflictCheck(int[] newPos){ return queenPos.contains(newPos) || obs.contains(newPos); }
     public static void queenCapture(int[] _pos){movableQueens.remove(getQueenFromPos(_pos));}
+    public static String Stringify(){
+        ArrayList<String> obsHolder = new ArrayList<>();
+        for(int[] ob : obs){
+            obsHolder.add(ob[0]+","+ob[1]+"~");
+        }
+        String obHeld = "";
+        for(String ob : obsHolder){
+            obHeld+=ob;
+        }
+        String qHeld = "";
+        for(Queen q : queensInPlay){
+            qHeld+= q+"~";
+        }
+        return boardPlane[0]+","+boardPlane[1]+"#"+obHeld+"#"+qHeld;
+    }
 }

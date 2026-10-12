@@ -266,4 +266,7 @@ public class Queen{
             }
         }
     }
+    public String toString(){
+        return initPos[0]+","+initPos[1];
+    }
 }
